@@ -4,55 +4,193 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Car Listings</title>
+    <title>Your Basket</title>
     <style>
-        /* Your existing CSS styles remain unchanged */
+	 body {
+            font-family: 'Arial', sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f9f9f9; /* Set the background color to match homepage1.php */
+            color: #333;
+        }
 
-        /* Additional style for the new buttons */
-        button.signup-button {
+        header {
+            background-color: #007bff; /* Match the homepage1.php header color */
+            color: #fff;
+            padding: 15px;
+            text-align: center;
+            position: relative;
+        }
+
+        .container {
+            width: 80%;
+            margin: 20px auto;
+            background-color: #fff; /* Set the background color to white */
+            padding: 20px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            border-radius: 8px;
+        }
+
+        h2 {
+            color: #007bff; /* Match the homepage1.php link color */
+        }
+
+        form {
+            margin-bottom: 20px;
+        }
+
+        input[type="text"] {
+            padding: 10px;
+            width: 70%;
+            margin-right: 10px;
+        }
+
+        input[type="submit"], a.button {
+            padding: 10px;
+            background-color: #007bff; /* Match the homepage1.php link color */
+            color: #fff;
+            border: none;
+            cursor: pointer;
+            text-decoration: none;
+            display: inline-block;
+            margin-right: 10px;
+        }
+
+        .basket-icon {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            cursor: pointer;
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .basket-icon img {
+            width: 60px; /* Increased size */
+            height: 60px; /* Increased size */
+            background: none; /* Removed background */
+        }
+
+        .basket-caption {
+            color: #007bff;
+            font-size: 14px;
+            margin-top: 5px;
+        }
+
+        .basket-count {
+            background-color: #007bff;
+            color: #fff;
+            border-radius: 50%;
+            padding: 5px;
+            font-size: 12px;
+            margin-top: -15px;
+        }
+
+        .view-basket-button {
+            padding: 10px;
+            background-color: #007bff;
+            color: #fff;
+            border: none;
+            cursor: pointer;
+            text-decoration: none;
+            display: inline-block;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+
+        th, td {
+            padding: 15px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+
+        th {
+            background-color: #007bff; /* Match the homepage1.php link color */
+            color: #fff;
+        }
+
+        button {
             padding: 10px;
             background-color: #555;
             color: #fff;
             border: none;
             cursor: pointer;
-            margin-top: 10px; /* Add some space between the search form and the button */
+            margin-right: 10px;
         }
 
-        button.new-user-button {
-            padding: 10px;
-            background-color: #4CAF50; /* Green color */
-            color: #fff;
-            border: none;
-            cursor: pointer;
-            margin-top: 10px; /* Add some space between the buttons */
-            margin-left: 10px; /* Add some space between the buttons */
+        button.signup-button {
+            background-color: #555;
+            margin-top: 10px;
         }
+		 /* Add your styles here */
     </style>
+	
+    <!-- Include jQuery -->
+  <!-- Add your head content here -->
+<script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+<script>
+   $(document).ready(function () {
+            // Add an event listener to the search input field
+            $('input[name="search"]').on('input', function () {
+                var searchValue = $(this).val();
+
+                // Fetch suggestions based on the user's input
+                $.post('get_suggestions.php', { search: searchValue }, function (data) {
+                    // Update the suggestion list
+                    $('#suggestionList').html(data);
+                });
+            });
+
+            // Handle clicks on suggestions
+            $(document).on('click', '.suggestion-item', function () {
+                // Set the clicked suggestion as the search input value
+                var suggestionValue = $(this).text();
+                $('input[name="search"]').val(suggestionValue);
+
+                // Trigger the form submission
+                $('form').submit();
+            });
+
+            // ... (your existing code)
+        });
+</script>
+
+
 </head>
 
 <body>
+
     <header>
-        <h1>Car Listings</h1>
-        <a href="signup.php" class="signup-button">Sign Up</a>
+        <!-- Add your header content here -->
+        <h1 style="margin: 0;">Car Listings</h1>
+        <div class="basket-icon" onclick="viewBasket()">
+            <img src="https://previews.123rf.com/images/puruan/puruan1702/puruan170203379/71990756-car-shopping-icon-in-flat-color-style-business-automotive-auto-buying-retail-sale.jpg" alt="Basket Icon">
+            <div class="basket-caption">Basket</div>
+            
+        </div>
+        <a href="basket.php" class="view-basket-button">View Basket</a>
     </header>
 
     <div class="container">
-        <a href='home.php'>Home</a>
-        <a href='signup.php' class="signup-button">Sign Up</a>
-        <button class="new-user-button" onclick="window.location.href='newuser.php';">New User</button>
 
-        <!-- Add the New User button next to the other buttons -->
+        <a href="homepage1.php" class="button">Back to Homepage</a>
+
         <h2>Search for Cars</h2>
         <form method="post" action="">
             <input type="text" name="search" placeholder="Enter search criteria">
             <input type="submit" value="Search">
         </form>
 
-        <?php
+        
         // Your PHP code for handling search and displaying results goes here
-        ?>
-
-        <?php
+        
+		 <?php
         $host = "localhost";
         $username = "2107130";
         $password = "password123";
@@ -73,7 +211,7 @@
 
             // Modify the SQL query to include the search criteria
             $sql = "SELECT * FROM `Cars` WHERE `Make` LIKE '%$search%' OR `Model` LIKE '%$search%' OR `Year` LIKE '%$search%' OR `Price` LIKE '%$search%'"; // Adjust the columns as needed
-			
+
             $result = $conn->query($sql);
 
             if ($result === false) {
@@ -89,6 +227,7 @@
                     echo '<th>Model</th>';
                     echo '<th>Year</th>';
                     echo '<th>Price</th>';
+                    echo '<th>Action</th>'; // Added column for action
                     echo '</tr>';
 
                     while ($row = $result->fetch_assoc()) {
@@ -99,6 +238,8 @@
                         echo '<td>' . $row["Model"] . '</td>';
                         echo '<td>' . $row["Year"] . '</td>';
                         echo '<td>' . $row["Price"] . '</td>';
+                        echo '<td>' . '<button class="add-to-basket-button" data-vehicle-id="' . $row["Vehicle_ID_Number"] . '">Add to Basket</button>' . '</td>';
+
                         echo '</tr>';
                     }
 
@@ -125,6 +266,7 @@
                     echo '<th>Model</th>';
                     echo '<th>Year</th>';
                     echo '<th>Price</th>';
+                    echo '<th>Action</th>'; // Added column for action
                     echo '</tr>';
 
                     while ($row = $result->fetch_assoc()) {
@@ -135,6 +277,7 @@
                         echo '<td>' . $row["Model"] . '</td>';
                         echo '<td>' . $row["Year"] . '</td>';
                         echo '<td>' . $row["Price"] . '</td>';
+                        echo '<td>' . '<button class="add-to-basket-button" data-vehicle-id="' . $row["Vehicle_ID_Number"] . '">Add to Basket</button>' . '</td>'; // Added add to basket button
                         echo '</tr>';
                     }
 
@@ -148,10 +291,6 @@
         // Close the connection
         $conn->close();
         ?>
-
-        <!-- Add a sign-up button underneath the search bar -->
-        <button class="signup-button" onclick="window.location.href='signup.php';">Sign Up</button>
     </div>
 </body>
-
 </html>
